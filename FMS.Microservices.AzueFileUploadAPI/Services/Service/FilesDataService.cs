@@ -8,7 +8,7 @@ namespace FMS.Services.AzueFileUploadAPI.Services.Service
 {
     public class FilesDataService : IFilesDataService
     {
-        string connectionString = "Data Source=avd-devper1-107;Initial Catalog=IncedoFMSDb;Integrated Security=True";
+        string connectionString = "Data Source=OCTOCAT\\SQLEXPRESS;Initial Catalog=IncedoFMSDb;Integrated Security=True";
 
         public async Task<IEnumerable<FileManagement>> GetAllFilesAsync()
         {
@@ -50,14 +50,14 @@ namespace FMS.Services.AzueFileUploadAPI.Services.Service
                                 DestinationPath = destinationpath,
                                 FileTypeID = filetypeid,
                                 Delimiter = delimiter,
-                                FixedLength = fixedlength,
+                                FixedLength = (fixedlength == "Y") ? "true" : "false",
                                 TemplateName = templatename,
                                 EmailID = emailid,
                                 ClientID = clientid,
-                                FileDate = filedate,
-                                InsertionMode = insertionmode,
-                                IsActive = isactive,
-                                DbNoteBook = dbnotebook
+                                FileDate = filedate.Trim(),
+                                InsertionMode = insertionmode.Trim(),
+                                IsActive = (isactive == "Y") ? "true" : "false",
+                                DbNotebook = dbnotebook
                             };
 
                             data.Add(fileData);

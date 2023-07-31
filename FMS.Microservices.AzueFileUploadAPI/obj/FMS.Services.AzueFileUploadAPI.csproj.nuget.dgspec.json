@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Kanhaiya.Bhayana\\Documents\\BE-FMS-master\\FMS.Microservices.AzueFileUploadAPI\\FMS.Services.AzueFileUploadAPI.csproj": {}
+    "C:\\Users\\ANSHUL\\OneDrive\\Documents\\fms-be\\FMS.Microservices.AzueFileUploadAPI\\FMS.Services.AzueFileUploadAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Kanhaiya.Bhayana\\Documents\\BE-FMS-master\\FMS.Microservices.AzueFileUploadAPI\\FMS.Services.AzueFileUploadAPI.csproj": {
+    "C:\\Users\\ANSHUL\\OneDrive\\Documents\\fms-be\\FMS.Microservices.AzueFileUploadAPI\\FMS.Services.AzueFileUploadAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Kanhaiya.Bhayana\\Documents\\BE-FMS-master\\FMS.Microservices.AzueFileUploadAPI\\FMS.Services.AzueFileUploadAPI.csproj",
+        "projectUniqueName": "C:\\Users\\ANSHUL\\OneDrive\\Documents\\fms-be\\FMS.Microservices.AzueFileUploadAPI\\FMS.Services.AzueFileUploadAPI.csproj",
         "projectName": "FMS.Services.AzueFileUploadAPI",
-        "projectPath": "C:\\Users\\Kanhaiya.Bhayana\\Documents\\BE-FMS-master\\FMS.Microservices.AzueFileUploadAPI\\FMS.Services.AzueFileUploadAPI.csproj",
-        "packagesPath": "C:\\Users\\Kanhaiya.Bhayana\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Kanhaiya.Bhayana\\Documents\\BE-FMS-master\\FMS.Microservices.AzueFileUploadAPI\\obj\\",
+        "projectPath": "C:\\Users\\ANSHUL\\OneDrive\\Documents\\fms-be\\FMS.Microservices.AzueFileUploadAPI\\FMS.Services.AzueFileUploadAPI.csproj",
+        "packagesPath": "C:\\Users\\ANSHUL\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ANSHUL\\OneDrive\\Documents\\fms-be\\FMS.Microservices.AzueFileUploadAPI\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Kanhaiya.Bhayana\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ANSHUL\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -25,6 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.306\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -83,7 +81,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }

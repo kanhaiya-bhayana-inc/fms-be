@@ -24,112 +24,118 @@ namespace FMS.Services.AzueFileUploadAPI.Repository
         public AzureBlobResponseDto UploadFileAsync([FromForm] FileManagementDTO fileManagementDTO)
         {
             var requestData = DataMapping.MapData(fileManagementDTO);
+            var t = new FileManagementDTO();
             AzureBlobResponseDto response = new();
             var fileNameObj = new NewFileNameDto();
             string fileNameNew = "";
-            string connectionString = "Data Source=avd-devper1-107;Initial Catalog=IncedoFMSDb;Integrated Security=True";
-            
-                using (SqlConnection connection = new SqlConnection(connectionString))
+            string connectionString = "Data Source=OCTOCAT\\SQLEXPRESS;Initial Catalog=IncedoFMSDb;Integrated Security=True";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("InsertIntoFileDetailsMaster", connection))
                 {
-                    connection.Open();
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@FileName", requestData.FileName);
+                    command.Parameters.AddWithValue("@SourcePath", requestData.SourcePath);
+                    command.Parameters.AddWithValue("@DestinationPath", requestData.DestinationPath);
+                    command.Parameters.AddWithValue("@FileTypeID", requestData.FileTypeID);
+                    command.Parameters.AddWithValue("@Delimeter", requestData.Delimiter);
+                    command.Parameters.AddWithValue("@FixedLength", requestData.FixedLength);
+                    command.Parameters.AddWithValue("@TemplateName", requestData.TemplateName);
+                    command.Parameters.AddWithValue("@EmailID", requestData.EmailID);
+                    command.Parameters.AddWithValue("@ClientID", requestData.ClientID);
+                    command.Parameters.AddWithValue("@FileDate", requestData.FileDate);
+                    command.Parameters.AddWithValue("@InsertionMode", requestData.InsertionMode);
+                    command.Parameters.AddWithValue("@IsActive", requestData.IsActive);
+                    command.Parameters.AddWithValue("@DbNotebook", requestData.DbNotebook);
 
-                    using (SqlCommand command = new SqlCommand("InsertIntoFileDetailsMaster",connection))
+                    SqlTransaction transaction = connection.BeginTransaction();
+                    try
                     {
-                        command.CommandType = System.Data.CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@FileName", requestData.FileName);
-                        command.Parameters.AddWithValue("@SourcePath", requestData.SourcePath);
-                        command.Parameters.AddWithValue("@DestinationPath", requestData.DestinationPath);
-                        command.Parameters.AddWithValue("@FileTypeID", requestData.FileTypeID);
-                        command.Parameters.AddWithValue("@Delimeter", requestData.Delimiter);
-                        command.Parameters.AddWithValue("@FixedLength", requestData.FixedLength);
-                        command.Parameters.AddWithValue("@TemplateName", requestData.TemplateName);
-                        command.Parameters.AddWithValue("@EmailID", requestData.EmailID);
-                        command.Parameters.AddWithValue("@ClientID", requestData.ClientID);
-                        command.Parameters.AddWithValue("@FileDate", requestData.FileDate);
-                        command.Parameters.AddWithValue("@InsertionMode", requestData.InsertionMode);
-                        command.Parameters.AddWithValue("@IsActive", requestData.IsActive);
-                        command.Parameters.AddWithValue("@DbNotebook", requestData.DbNoteBook);
-
-                        SqlTransaction transaction = connection.BeginTransaction();
-                        try
+                        command.Transaction = transaction;
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            command.Transaction = transaction;
-                            using (SqlDataReader reader = command.ExecuteReader())
+                            if (reader.Read())
                             {
-                                if (reader.Read())
-                                {
-                                    fileNameObj.GUID = reader.GetGuid(0);
-                                    fileNameObj.FileName = reader.GetString(1);
-                                }
-                                
-                                if (fileNameObj.GUID != null && fileNameObj.FileName != null)
-                                {
-                                    fileNameNew = $"{fileNameObj.GUID}{fileNameObj.FileName}";
-
-                                }
+                                fileNameObj.GUID = reader.GetGuid(0);
+                                fileNameObj.FileName = reader.GetString(1);
+                                t = DataMapping.MapReturnData(reader);
                             }
 
-                            // create new file name
-
-                            IFormFile uploadFile = null;
-                            AzureBlobResponseDto response1 = new ();
-                            AzureBlobResponseDto response2 = new();
-                            string newFileName = RenameFile.CreateNewFileName(fileManagementDTO.TemplateFile.FileName, fileNameNew);
-                            if (newFileName != null)
+                            if (fileNameObj.GUID != null && fileNameObj.FileName != null)
                             {
-                                uploadFile = new RenameFile(fileManagementDTO.TemplateFile, newFileName);
-                                response1 = _uploadFile.FileUploadAsync(uploadFile).Result;
+                                fileNameNew = $"{fileNameObj.GUID}{fileNameObj.FileName}";
+
                             }
+                        }
 
-                            if (!response1.Error)
+                        // create new file name
+
+                        IFormFile uploadFile = null;
+                        AzureBlobResponseDto response1 = new();
+                        AzureBlobResponseDto response2 = new();
+                        string newFileName = RenameFile.CreateNewFileName(fileManagementDTO.TemplateFile.FileName, fileNameNew);
+                        if (newFileName != null)
+                        {
+                            uploadFile = new RenameFile(fileManagementDTO.TemplateFile, newFileName);
+                            t.TemplateFile = uploadFile;
+                            t.SampleFile = fileManagementDTO.SampleFile;
+                            response1 = _uploadFile.FileUploadAsync(uploadFile).Result;
+                        }
+
+                        if (!response1.Error)
+                        {
+                            if (fileManagementDTO.SampleFile != null)
                             {
-                                if (fileManagementDTO.SampleFile != null)
-                                {
-                                    response2 = _uploadFile.FileUploadAsync(fileManagementDTO.SampleFile).Result;
-                                    if (!response2.Error)
-                                    {
-                                        transaction.Commit();
-                                        response.Error = false;
-                                        response.Status = response2.Status;
-                                        Console.WriteLine("Transaction Committed");
-                                    }
-                                    else
-                                    {
-                                        response.Error = true;
-                                        response.Status = response2.Status;
-                                        throw new Exception(response.Status);
-                                    }
-                                }
-                                else
+                                response2 = _uploadFile.FileUploadAsync(fileManagementDTO.SampleFile).Result;
+                                if (!response2.Error)
                                 {
                                     transaction.Commit();
                                     response.Error = false;
-                                    response.Status = response1.Status;
+                                    response.Status = response2.Status;
+                                    response.data = t;
                                     Console.WriteLine("Transaction Committed");
+                                }
+                                else
+                                {
+                                    response.Error = true;
+                                    response.Status = response2.Status;
+                                    throw new Exception(response.Status);
                                 }
                             }
                             else
                             {
-                                response.Error = true;
+                                transaction.Commit();
+                                response.Error = false;
                                 response.Status = response1.Status;
-                                throw new Exception(response.Status);
+                                response.data = t;
+                                Console.WriteLine("Transaction Committed");
                             }
-
                         }
-                        catch (Exception EX)
+                        else
                         {
-                            transaction.Rollback();
                             response.Error = true;
-                            response.Status = EX.Message;
-                        }
-                        finally
-                        {
-                            connection.Close();
+                            response.Status = response1.Status;
+                            throw new Exception(response.Status);
                         }
 
                     }
+                    catch (Exception EX)
+                    {
+                        transaction.Rollback();
+                        response.Error = true;
+                        response.Status = EX.Message;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+
                 }
-            
+            }
+
             return response;
         }
     }

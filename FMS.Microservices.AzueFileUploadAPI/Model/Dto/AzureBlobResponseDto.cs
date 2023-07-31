@@ -5,5 +5,7 @@
         public string? Status { get; set; }
 
         public bool Error { get; set; }
+        public FileManagementDTO? data { get; set; }
+
     }
 }

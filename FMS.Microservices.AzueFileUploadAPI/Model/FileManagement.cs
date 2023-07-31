@@ -18,7 +18,7 @@
         public string? InsertionMode { get; set; }
         public string IsActive { get; set;}
 
-        public string? DbNoteBook { get; set; }
+        public string? DbNotebook { get; set; }
 
 
     }

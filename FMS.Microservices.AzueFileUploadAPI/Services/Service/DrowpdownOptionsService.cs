@@ -7,7 +7,7 @@ namespace FMS.Services.AzueFileUploadAPI.Services.Service
 {
     public class DrowpdownOptionsService : IDrowpdownOptionsService
     {
-        string connectionString = "Data Source=avd-devper1-107;Initial Catalog=IncedoFMSDb;Integrated Security=True";
+        string connectionString = "Data Source=OCTOCAT\\SQLEXPRESS;Initial Catalog=IncedoFMSDb;Integrated Security=True";
         public async Task<IEnumerable<DelimiterOptions>> GetDelimiterOptionsAsync()
         {
             List<DelimiterOptions> data = new List<DelimiterOptions>();
