@@ -2,31 +2,36 @@
 using Azure.Storage.Blobs;
 using Azure;
 using FMS.Services.AzueFileUploadAPI.Model.Dto;
+using FMS.Services.AzueFileUploadAPI.Helpers;
 
 namespace FMS.Services.AzueFileUploadAPI.Services
 {
     public class AzureUploadFileService : IAzureUploadFileService
     {
         private readonly string _storageConnectionString;
-        //private readonly string _storageContainerName;
+        private readonly string _storageContainerName;
+        private FixPathMapping fpm;
 
         public AzureUploadFileService(IConfiguration configuration)
         {
             _storageConnectionString = configuration.GetValue<string>("BlobConnectionString");
-            //_storageContainerName = configuration.GetValue<string>("BlobContainerName");
+            fpm = new FixPathMapping(configuration);
+            _storageContainerName = configuration.GetValue<string>("BlobContainerNameTempFile");
         }
-        public async Task<AzureBlobResponseDto> UploadAsync(IFormFile blob, string containerName)
+        public async Task<AzureBlobResponseDto> UploadAsync(IFormFile blob, string filetype, string path)
         {
             AzureBlobResponseDto response = new();
-            BlobContainerClient container = new BlobContainerClient(_storageConnectionString, containerName);
-
+            BlobContainerClient container = new BlobContainerClient(_storageConnectionString, _storageContainerName);
+           
+            
+            string location = fpm.FixPathMapper(path, filetype);
             try
             {
-                BlobClient client = container.GetBlobClient(blob.FileName);
+                BlobClient client = container.GetBlobClient($"{location}/{blob.FileName}");
 
                 await using (Stream? data = blob.OpenReadStream())
                 {
-                    await client.UploadAsync(data,overwrite:true);
+                    await client.UploadAsync(data, overwrite: true);
                 }
 
                 response.Status = $"File Uploaded Successfully";

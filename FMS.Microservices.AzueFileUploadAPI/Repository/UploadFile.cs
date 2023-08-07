@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using FMS.Services.AzueFileUploadAPI.DBContext;
 using System.Data.SqlClient;
 using FMS.Services.AzueFileUploadAPI.Helpers;
+using FMS.Services.AzueFileUploadAPI.Utility;
 
 namespace FMS.Services.AzueFileUploadAPI.Repository
 {
@@ -72,8 +73,13 @@ namespace FMS.Services.AzueFileUploadAPI.Repository
 
                             if (fileNameObj.GUID != null && fileNameObj.FileName != null)
                             {
-                                fileNameNew = $"{fileNameObj.GUID}{fileNameObj.FileName}";
+                                fileNameNew = $"{fileNameObj.GUID}_{fileNameObj.FileName}";
 
+                            }
+
+                            if (fileNameObj.GUID == new Guid())
+                            {
+                                fileNameNew = $"{requestData.FileMasterId}_{requestData.FileName}";
                             }
                         }
 
@@ -88,14 +94,14 @@ namespace FMS.Services.AzueFileUploadAPI.Repository
                             uploadFile = new RenameFile(fileManagementDTO.TemplateFile, newFileName);
                             t.TemplateFile = uploadFile;
                             t.SampleFile = fileManagementDTO.SampleFile;
-                            response1 = _uploadFile.FileUploadAsync(uploadFile,_tempFileContainerName).Result;
+                            response1 = _uploadFile.FileUploadAsync(uploadFile,StaticDetails.fileTypeTemplate,requestData.SourcePath).Result;
                         }
 
                         if (!response1.Error)
                         {
                             if (fileManagementDTO.SampleFile != null)
                             {
-                                response2 = _uploadFile.FileUploadAsync(fileManagementDTO.SampleFile,_sampFileContainerName).Result;
+                                response2 = _uploadFile.FileUploadAsync(fileManagementDTO.SampleFile,StaticDetails.fileTypeSample,requestData.SourcePath).Result;
                                 if (!response2.Error)
                                 {
                                     transaction.Commit();

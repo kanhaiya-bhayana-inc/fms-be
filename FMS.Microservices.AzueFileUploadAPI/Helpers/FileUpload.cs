@@ -11,9 +11,9 @@ namespace FMS.Services.AzueFileUploadAPI.Helpers
         {
             _azureUploadFileService = azureUploadFileService;
         }
-        public async Task<AzureBlobResponseDto> FileUploadAsync(IFormFile formFile, string containerName)
+        public async Task<AzureBlobResponseDto> FileUploadAsync(IFormFile formFile, string containerName, string path)
         {
-            AzureBlobResponseDto response = await _azureUploadFileService.UploadAsync(formFile,containerName);
+            AzureBlobResponseDto response = await _azureUploadFileService.UploadAsync(formFile,containerName, path);
             return response;
         }
     }
