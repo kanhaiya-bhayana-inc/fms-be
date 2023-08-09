@@ -11,11 +11,13 @@ namespace FMS.Services.AzueFileUploadAPI.Controllers
     {
         private readonly IDrowpdownOptionsService _dropdownOptions;
         private readonly IFilesDataService _filesData;
+        private readonly IBlobConfigService _blobConfigService;
 
-        public DataController(IDrowpdownOptionsService drowpdownOptionsService,IFilesDataService filesData)
+        public DataController(IDrowpdownOptionsService drowpdownOptionsService,IFilesDataService filesData, IBlobConfigService blobConfigService)
         {
             _dropdownOptions = drowpdownOptionsService;
             _filesData = filesData;
+            _blobConfigService = blobConfigService;
 
         }
 
@@ -81,6 +83,21 @@ namespace FMS.Services.AzueFileUploadAPI.Controllers
             try
             {
                 var response = await _filesData.GetAllFilesAsync();
+                return new JsonResult(response);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        [HttpGet("GetBlobConfigInfo")]
+        public async Task<IActionResult> GetBlobConfigInfo()
+        {
+            try
+            {
+                var response = await _blobConfigService.GetBlobInfoAsync();
                 return new JsonResult(response);
             }
             catch (Exception ex)

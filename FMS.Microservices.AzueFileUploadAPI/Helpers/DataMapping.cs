@@ -8,7 +8,13 @@ namespace FMS.Services.AzueFileUploadAPI.Helpers
 {
     public class DataMapping
     {
-        public static FileManagement MapData(FileManagementDTO request)
+        private readonly string _containerName;
+
+        public DataMapping(IConfiguration configuration)
+        {
+            _containerName = configuration.GetValue<string>("BlobConfiguration:BlobContainerNameTempFile");
+        }
+        public FileManagement MapData(FileManagementDTO request)
         {
             FileManagement response = new FileManagement();
             if (request != null)
@@ -16,7 +22,7 @@ namespace FMS.Services.AzueFileUploadAPI.Helpers
                 response.FileMasterId = request.FileMasterId;
                 response.FileDate = request.FileDate;
                 response.FileName = request.FileName;
-                response.SourcePath = $"00landing{request.SourcePath}";
+                response.SourcePath = $"{_containerName}{request.SourcePath}";
                 response.DestinationPath = $"00raw{request.DestinationPath}";
                 response.EmailID = request.EmailID;
                 response.Delimiter = request.Delimiter;

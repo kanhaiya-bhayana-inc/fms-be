@@ -16,6 +16,7 @@ namespace FMS.Services.AzueFileUploadAPI.Repository
         private readonly FileUpload _uploadFile;
         private readonly string _tempFileContainerName;
         private readonly string _sampFileContainerName;
+        private readonly DataMapping _dataMapping;
 
 
         public UploadFile(IConfiguration configuration, FileUpload uploadFile)
@@ -25,10 +26,11 @@ namespace FMS.Services.AzueFileUploadAPI.Repository
             _uploadFile = uploadFile;
             _tempFileContainerName = configuration.GetValue<string>("BlobContainerNameTempFile");
             _sampFileContainerName = configuration.GetValue<string>("BlobContainerNameSampFile");
+            _dataMapping = new DataMapping(configuration);
         }
         public AzureBlobResponseDto UploadFileAsync([FromForm] FileManagementDTO fileManagementDTO)
         {
-            var requestData = DataMapping.MapData(fileManagementDTO);
+            var requestData = _dataMapping.MapData(fileManagementDTO);
             var t = new FileManagementDTO();
             AzureBlobResponseDto response = new();
             var fileNameObj = new NewFileNameDto();

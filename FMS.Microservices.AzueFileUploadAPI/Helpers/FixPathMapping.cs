@@ -5,12 +5,10 @@ namespace FMS.Services.AzueFileUploadAPI.Helpers
 {
     public class FixPathMapping
     {
-        private readonly string _tempContainerName;
-        private readonly string _sampContainerName;
+        private readonly string _templateFileLocation;
         public FixPathMapping(IConfiguration configuration)
         {
-            _tempContainerName = configuration.GetValue<string>("BlobContainerNameTempFile");
-            _sampContainerName = configuration.GetValue<string>("BlobContainerNameSampFile");
+            _templateFileLocation = configuration.GetValue<string>("BlobConfiguration:TemplateFileLocation");
         }
         public string FixPathMapper(string path, string fileType)
         {
@@ -20,7 +18,7 @@ namespace FMS.Services.AzueFileUploadAPI.Helpers
             {
                 if (pathComponents.Length >= 3)
                 {
-                    returnPath = StaticDetails.templateFilePath;
+                    returnPath = _templateFileLocation;
                 }
             }
             else if(fileType == StaticDetails.fileTypeSample)

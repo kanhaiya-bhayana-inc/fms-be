@@ -12,6 +12,7 @@ builder.Services.AddScoped<FileUpload>();
 builder.Services.AddScoped<IUploadFile, UploadFile>();
 builder.Services.AddScoped<IDrowpdownOptionsService,DrowpdownOptionsService>();
 builder.Services.AddScoped<IFilesDataService,FilesDataService>();
+builder.Services.AddScoped<IBlobConfigService,BlobConfigService>();
 
 
 builder.Services.AddControllers();
